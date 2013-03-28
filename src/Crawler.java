@@ -49,7 +49,7 @@ public class Crawler {
 		addLinks(getLinks(doc));
 		if (verb) System.out.println("Crawled: "+ url);
 		Long index = addIndex(url);
-		jedis.sadd("toParse", index.toString() + ":" + getText(doc));
+		jedis.rpush("toParse", index.toString() + ":" + getText(doc));
 		return true;
 	}
 
@@ -58,12 +58,12 @@ public class Crawler {
 		return jedis.scard("toCawl")>0;
 	}
 	
-	public void silent() {
-		verb = false;
-	}
-		
 	public void verbose() {
 		verb = true;
+	}
+	
+	public void silent() {
+		verb = false;
 	}
 	
 	private long addIndex(String url) {
