@@ -12,7 +12,7 @@ import redis.clients.jedis.Jedis;
  * @author Brendan Ritter
  * @author Riley Butler
  */
-public class Crawler {
+public class Crawler implements Runnable{
 
 	private Jedis jedis;
 	private boolean verb;

@@ -7,7 +7,7 @@ import redis.clients.jedis.*;
  * @author Brendan Ritter
  * @author Riley Butler
  */
-public class Parser {
+public class Parser implements Runnable {
 
 	private Jedis jedis;
 	private boolean verb;
