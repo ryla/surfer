@@ -76,6 +76,7 @@ public class Crawler {
 		if (!jedis.sismember("triedCrawl",link)){
 			jedis.sadd("toCrawl", link);
 		}
+		jedis.zincrby("urlScore", 1, link);
 	}
 	
 	private void addLinks(HashSet<String> links){
