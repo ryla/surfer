@@ -1,4 +1,6 @@
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.HashSet;
 
 import org.jsoup.*;
@@ -35,13 +37,23 @@ public class Crawler implements Runnable{
 	}
 	
 	public boolean runOnce(){
-		Document doc=null;
+		Document doc = null;
+		Connection con = null;
+		URL urlObj = null;
 		String url = jedis.spop("toCrawl");
 		jedis.sadd("triedCrawl", url);
 		
 		try {
-			Connection con = Jsoup.connect(url);
-			con.timeout(timeout);
+			urlObj = new URL(url);
+		} catch (MalformedURLException e) {
+			if (verb) System.out.println("Malformed: " + url);
+			return false;
+		}
+
+		con = Jsoup.connect(urlObj.toString());
+		con.timeout(timeout);
+		
+		try {
 			doc=con.get();
 		} catch (IOException e) {
 			if (verb) System.out.println("Failed: " + url);
