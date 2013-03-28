@@ -69,7 +69,7 @@ public class Parser implements Runnable {
 		for (String keyword: text.split("\\s+")) {
 			keywords.add(keyword.toLowerCase());
 		}
-		if (verb) System.out.println(keywords.toString());
+		if (verb) System.out.println("Keywords: "+keywords.toString());
 		return keywords;
 	}
 	
