@@ -14,38 +14,13 @@ import redis.clients.jedis.Jedis;
  */
 public class Crawler {
 
-	public void verbose() {
-		verb = true;
-	}
-	
-	public void silent() {
-		verb = false;
-	}
-
 	private Jedis jedis;
 	private boolean verb;
-	
-	private void addLinks(HashSet<String> links){
-		for(String link: links){
-			addLink(link);
-		}
-	}
-	
-	public boolean seed(String url) {
-		addLink(url);
-		return jedis.scard("toCawl")>0;
-	}
-	
-	private void addLink(String link){
-		if (!jedis.sismember("triedCrawl",link)){
-			jedis.sadd("toCrawl", link);
-		}
-	}
 	
 	public Crawler(String hostname){
 		this.jedis=new Jedis(hostname);
 	}
-	
+
 	public void run() {
 		while (true) {
 			runOnce();
@@ -75,7 +50,32 @@ public class Crawler {
 		if (verb) System.out.println("Crawled: "+ url);
 		return true;
 	}
-    
+
+	public boolean seed(String url) {
+		addLink(url);
+		return jedis.scard("toCawl")>0;
+	}
+	
+	public void silent() {
+		verb = false;
+	}
+		
+	public void verbose() {
+		verb = true;
+	}
+	
+	private void addLink(String link){
+		if (!jedis.sismember("triedCrawl",link)){
+			jedis.sadd("toCrawl", link);
+		}
+	}
+	
+	private void addLinks(HashSet<String> links){
+		for(String link: links){
+			addLink(link);
+		}
+	}
+	
     private static HashSet<String> getLinks(Document doc){
    	 HashSet<String> uniqueLinks=new HashSet<String>();
    	 Elements links = doc.getElementsByTag("a");
