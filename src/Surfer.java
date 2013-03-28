@@ -5,6 +5,9 @@ public class Surfer {
 		Crawler crawler = new Crawler("localhost");
 		crawler.seed("http://www.olin.edu/");
 		crawler.verbose();
-		crawler.run(500);
+		Parser parser = new Parser("localhost");
+		parser.verbose();
+		crawler.run(100);
+		parser.run(100);
 	}
 }
