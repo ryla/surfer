@@ -8,7 +8,8 @@ public class Surfer {
 		crawler.verbose();
 		Parser parser = new Parser(new Jedis("localhost"));
 		parser.verbose();
+		parser.setTimeout(5);
 		crawler.run(100);
-		parser.run(1);
+		parser.run();
 	}
 }

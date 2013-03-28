@@ -16,6 +16,7 @@ public class Crawler {
 
 	private Jedis jedis;
 	private boolean verb;
+	private int timeout = 30000;
 	
 	public Crawler(Jedis jedis){
 		this.jedis = jedis;
@@ -40,6 +41,7 @@ public class Crawler {
 		
 		try {
 			Connection con = Jsoup.connect(url);
+			con.timeout(timeout);
 			doc=con.get();
 		} catch (IOException e) {
 			if (verb) System.out.println("Failed: " + url);
@@ -56,6 +58,15 @@ public class Crawler {
 	public boolean seed(String url) {
 		addLink(url);
 		return jedis.scard("toCawl")>0;
+	}
+	
+	public void setTimeout(int timeout) {
+		if (timeout >= 0) this.timeout = timeout;
+		else this.timeout = 0;
+	}
+	
+	public int getTimeout() {
+		return timeout;
 	}
 	
 	public void verbose() {

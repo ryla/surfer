@@ -11,24 +11,23 @@ public class Parser {
 
 	private Jedis jedis;
 	private boolean verb;
+	private int timeout = 0;
 	
 	public Parser(Jedis jedis){
 		this.jedis = jedis;
 	}
 	
 	public void run() {
-		run(0);
+		while (runOnce());
 	}
 	
-	public void run(int timeout) {
-		while (runOnce(timeout)) {}
+	public void run(int attempts) {
+		for (int i = 0; i < attempts; i++) {
+			if (! runOnce()) return;
+		}
 	}
 	
 	public boolean runOnce() {
-		return runOnce(0);
-	}
-	
-	public boolean runOnce(int timeout) {
 		List<String> results = jedis.blpop(timeout, "toParse");
 		if (results == null) {
 			System.out.println("Parser timeout");
@@ -46,6 +45,15 @@ public class Parser {
 		
 		if (verb) System.out.println("Parsed: " + jedis.hget("urlIndex", index));
 		return true;
+	}
+	
+	public void setTimeout(int timeout) {
+		if (timeout >= 0) this.timeout = timeout;
+		else this.timeout = 0;
+	}
+	
+	public int getTimeout() {
+		return timeout;
 	}
 	
 	public void verbose() {
