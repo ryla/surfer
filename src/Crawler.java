@@ -48,6 +48,7 @@ public class Crawler {
 
 		addLinks(getLinks(doc));
 		if (verb) System.out.println("Crawled: "+ url);
+		long index = addIndex(url);
 		return true;
 	}
 
@@ -62,6 +63,12 @@ public class Crawler {
 		
 	public void verbose() {
 		verb = true;
+	}
+	
+	private long addIndex(String url) {
+		Long index = jedis.incr("urlCount");
+		jedis.hset("urlIndex", index.toString(), url);
+		return (long)index;
 	}
 	
 	private void addLink(String link){
