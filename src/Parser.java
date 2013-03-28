@@ -3,14 +3,17 @@ import java.util.List;
 
 import redis.clients.jedis.*;
 
-
+/**
+ * @author Brendan Ritter
+ * @author Riley Butler
+ */
 public class Parser {
 
 	private Jedis jedis;
 	private boolean verb;
 	
-	public Parser(String hostname){
-		this.jedis=new Jedis(hostname);
+	public Parser(Jedis jedis){
+		this.jedis = jedis;
 	}
 	
 	public void run() {

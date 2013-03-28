@@ -17,8 +17,8 @@ public class Crawler {
 	private Jedis jedis;
 	private boolean verb;
 	
-	public Crawler(String hostname){
-		this.jedis=new Jedis(hostname);
+	public Crawler(Jedis jedis){
+		this.jedis = jedis;
 	}
 
 	public void run() {
