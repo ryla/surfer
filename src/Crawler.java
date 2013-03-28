@@ -14,7 +14,16 @@ import redis.clients.jedis.Jedis;
  */
 public class Crawler {
 
+	public void verbose() {
+		verb = true;
+	}
+	
+	public void silent() {
+		verb = false;
+	}
+
 	private Jedis jedis;
+	private boolean verb;
 	
 	private void addLinks(HashSet<String> links){
 		for(String link: links){
@@ -58,11 +67,12 @@ public class Crawler {
 			Connection con = Jsoup.connect(url);
 			doc=con.get();
 		} catch (IOException e) {
+			if (verb) System.out.println("Failed: " + url);
 			return false;
 		} 
 
 		addLinks(getLinks(doc));
-		
+		if (verb) System.out.println("Crawled: "+ url);
 		return true;
 	}
     
