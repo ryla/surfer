@@ -1,24 +1,16 @@
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.HashSet;
 
-import org.jsoup.Connection;
-import org.jsoup.Jsoup;
-import org.jsoup.helper.Validate;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
-/**
- *
- */
+import org.jsoup.*;
+import org.jsoup.nodes.*;
+import org.jsoup.select.*;
 
 import redis.clients.jedis.Jedis;
-import redis.clients.jedis.Pipeline;
-import redis.clients.jedis.Transaction;
 
 /**
- * @author neghtebas and brendan ritter
- *
+ * @author Chloe Eghtebas
+ * @author Brendan Ritter
+ * @author Riley Butler
  */
 public class Crawler {
 
