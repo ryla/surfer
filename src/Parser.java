@@ -55,7 +55,9 @@ public class Parser {
 	
 	private static HashSet<String> parseText(String text) {
 		HashSet<String> keywords = new HashSet<String>();
-		keywords.add("test");
+		for (String keyword: text.split("\\s+")) {
+			keywords.add(keyword.toLowerCase());
+		}
 		return keywords;
 	}
 	
