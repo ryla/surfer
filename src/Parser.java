@@ -64,11 +64,12 @@ public class Parser implements Runnable {
 		verb = false;
 	}
 	
-	private static HashSet<String> parseText(String text) {
+	private HashSet<String> parseText(String text) {
 		HashSet<String> keywords = new HashSet<String>();
 		for (String keyword: text.split("\\s+")) {
 			keywords.add(keyword.toLowerCase());
 		}
+		if (verb) System.out.println(keywords.toString());
 		return keywords;
 	}
 	
