@@ -27,8 +27,8 @@ public class Crawler {
 		}
 	}
 	
-	public void run(int count) {
-		for (int i = 0; i < count; i++) {
+	public void run(int attempts) {
+		for (int i = 0; i < attempts; i++) {
 			runOnce();
 		}
 	}
@@ -48,7 +48,8 @@ public class Crawler {
 
 		addLinks(getLinks(doc));
 		if (verb) System.out.println("Crawled: "+ url);
-		long index = addIndex(url);
+		Long index = addIndex(url);
+		jedis.sadd("toParse", index.toString() + ":" + getText(doc));
 		return true;
 	}
 
@@ -83,21 +84,20 @@ public class Crawler {
 		}
 	}
 	
-    private static HashSet<String> getLinks(Document doc){
-   	 HashSet<String> uniqueLinks=new HashSet<String>();
-   	 Elements links = doc.getElementsByTag("a");
-   	 for (Element link : links) {
-   	   String absUrl = link.absUrl("href");
-   	   uniqueLinks.add(absUrl);
-   	 }
-   	 return uniqueLinks;
-    }
-    
-    private static String getText(Document doc){
-   	 String allText= doc.text();
-   	 System.out.println(doc.text());
-   	 return allText;
-   	 
-    }
+	private static HashSet<String> getLinks(Document doc){
+		HashSet<String> uniqueLinks=new HashSet<String>();
+		Elements links = doc.getElementsByTag("a");
+		for (Element link : links) {
+			String absUrl = link.absUrl("href");
+			uniqueLinks.add(absUrl);
+		}
+		return uniqueLinks;
+	}
+
+	private static String getText(Document doc){
+		String allText = doc.title() + " " +doc.text();
+		return allText;
+
+	}
     
 }
