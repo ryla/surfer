@@ -37,6 +37,10 @@ public class Surfer {
 				System.out.println(url);
 			} catch (MalformedURLException e) {
 				e.printStackTrace();
+			} catch (UnsupportedMimeTypeException e) {
+				e.printStackTrace();
+			} catch (HttpStatusException e) {
+				e.printStackTrace();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
