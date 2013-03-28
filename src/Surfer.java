@@ -1,6 +1,4 @@
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.HashSet;
 
 import org.jsoup.*;
@@ -12,38 +10,30 @@ import redis.clients.jedis.Jedis;
 
 public class Surfer {
 
-	public static void main(String[] args){
-		Jedis crawled = new Jedis("localhost");	
-		crawled.select(0);
-		Jedis found = new Jedis("localhost");
-		found.select(1);
-		found.set("http://www.olin.edu", "0");
+	public static void main(String[] args) {
+		Jedis jedis = new Jedis("localhost");	
+		jedis.sadd("toCrawl", "http://www.olin.edu");
 		for (int i = 0; i < 500; i++) {
 			Document doc;
+			String url = jedis.spop("toCrawl");
 			try {
-				String url = found.randomKey();
-				doc = Jsoup.parse(new URL(url), 5000);
+				doc = Jsoup.connect(url).get();
 				Elements elems = doc.getElementsByAttribute("href");
 				HashSet<String> links = new HashSet<String>();
 				for (Element elem: elems) {
 					links.add(elem.attr("abs:href"));
 				}
 				for (String link: links) {
-					if (! crawled.exists(link)) {
-						found.set(link, "0");
+					if (! jedis.sismember("alreadyCrawled", link) && 
+							! jedis.sismember("failedCrawl", url)) {
+						jedis.sadd("toCrawl", link);
 					}
 				}
-				found.move(url, 0);
+				jedis.sadd("alreadyCrawled", url);
 				System.out.println(url);
-			} catch (MalformedURLException e) {
-				e.printStackTrace();
-			} catch (UnsupportedMimeTypeException e) {
-				e.printStackTrace();
-			} catch (HttpStatusException e) {
-				e.printStackTrace();
 			} catch (IOException e) {
-				e.printStackTrace();
-			}
+				jedis.sadd("failedCrawl", url);
+			} 
 		}
 	}
 
