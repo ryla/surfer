@@ -9,6 +9,6 @@ public class Surfer {
 		Parser parser = new Parser(new Jedis("localhost"));
 		parser.verbose();
 		crawler.run(100);
-		parser.run(100);
+		parser.run(1);
 	}
 }

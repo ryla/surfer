@@ -17,19 +17,19 @@ public class Parser {
 	}
 	
 	public void run() {
-		while (true) {
-			runOnce();
-		}
+		run(0);
 	}
 	
-	public void run(int attempts) {
-		for (int i = 0; i < attempts; i++) {
-			runOnce();
-		}
+	public void run(int timeout) {
+		while (runOnce(timeout)) {}
 	}
 	
 	public boolean runOnce() {
-		List<String> results = jedis.blpop(5, "toParse");
+		return runOnce(0);
+	}
+	
+	public boolean runOnce(int timeout) {
+		List<String> results = jedis.blpop(timeout, "toParse");
 		if (results == null) {
 			System.out.println("Parser timeout");
 			return false;
