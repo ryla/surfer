@@ -1,4 +1,4 @@
-import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.List;
 
 import redis.clients.jedis.*;
@@ -62,8 +62,9 @@ public class Parser implements Runnable {
 	public void silent() {
 		verb = false;
 	}
-	private HashSet<String> parseText(String text) {
-		HashSet<String> keywords = new HashSet<String>();
+	
+	private ArrayList<String> parseText(String text) {
+		ArrayList<String> keywords = new ArrayList<String>();
 		for (String keyword: text.split("\\s+")) {
 			String lower=keyword.toLowerCase();
 			String nopunc=lower.replaceAll("[^a-z0-9]",""); 
