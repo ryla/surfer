@@ -1,4 +1,3 @@
-import redis.clients.jedis.Jedis;
 import redis.clients.jedis.*;
 
 /**
@@ -11,9 +10,12 @@ import redis.clients.jedis.*;
  *
  */ 
 public class Searcher {
-
+	private Jedis jedis;
+	
 	public Searcher(Jedis jedis){
 		this.jedis = jedis;
 	}
+	
+	
 	
 }
