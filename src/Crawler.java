@@ -41,6 +41,7 @@ public class Crawler implements Runnable{
 		Connection con = null;
 		URL urlObj = null;
 		String url = jedis.spop("toCrawl");
+		if (url == null) return false;
 		jedis.sadd("triedCrawl", url);
 		
 		try {
