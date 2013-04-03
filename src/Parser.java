@@ -38,7 +38,10 @@ public class Parser implements Runnable {
 		String index = split[0];
 		String text = split[1];
 		
-		for (String keyword: parseText(text)) {
+		ArrayList<String> keywords = parseText(text);
+		if (verb) System.out.println("Keywords: "+keywords.toString());
+		
+		for (String keyword: keywords) {
 			jedis.sadd(keyword, index);
 		}
 		
@@ -63,7 +66,7 @@ public class Parser implements Runnable {
 		verb = false;
 	}
 	
-	private ArrayList<String> parseText(String text) {
+	private static ArrayList<String> parseText(String text) {
 		ArrayList<String> keywords = new ArrayList<String>();
 		for (String keyword: text.split("\\s+")) {
 			String lower=keyword.toLowerCase();
@@ -72,7 +75,6 @@ public class Parser implements Runnable {
 				keywords.add(nopunc);
 			}
 		}
-		if (verb) System.out.println("Keywords: "+keywords.toString());
 		return keywords;
 	}
 	
