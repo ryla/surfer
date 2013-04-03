@@ -100,6 +100,8 @@ public class Crawler implements Runnable{
 		if (!jedis.sismember("triedCrawl",link)){
 			jedis.sadd("toCrawl", link);
 		}
+		System.out.println(link);
+		jedis.zincrby("urlScore", 1, link);
 	}
 	
 	private void addLinks(HashSet<String> links){
