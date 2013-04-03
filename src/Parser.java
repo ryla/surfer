@@ -66,7 +66,7 @@ public class Parser implements Runnable {
 		HashSet<String> keywords = new HashSet<String>();
 		for (String keyword: text.split("\\s+")) {
 			String lower=keyword.toLowerCase();
-			String nopunc=lower.replaceAll("[^a-z]",""); 
+			String nopunc=lower.replaceAll("[^a-z0-9]",""); 
 			if (!nopunc.equals("")){
 				keywords.add(nopunc);
 			}
