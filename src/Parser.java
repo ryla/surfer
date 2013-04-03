@@ -33,7 +33,6 @@ public class Parser implements Runnable {
 			System.out.println("Parser timeout");
 			return false;
 		}
-		
 		String contents = results.get(1);
 		String[] split = contents.split(":", 2);
 		String index = split[0];
@@ -63,11 +62,14 @@ public class Parser implements Runnable {
 	public void silent() {
 		verb = false;
 	}
-	
 	private HashSet<String> parseText(String text) {
 		HashSet<String> keywords = new HashSet<String>();
 		for (String keyword: text.split("\\s+")) {
-			keywords.add(keyword.toLowerCase());
+			String lower=keyword.toLowerCase();
+			String nopunc=lower.replaceAll("[^a-z]",""); 
+			if (!nopunc.equals("")){
+				keywords.add(nopunc);
+			}
 		}
 		if (verb) System.out.println("Keywords: "+keywords.toString());
 		return keywords;
