@@ -42,8 +42,10 @@ public class Parser implements Runnable {
 		if (verb) System.out.println("Keywords: "+keywords.toString());
 		
 		for (String keyword: keywords) {
-			jedis.sadd(keyword, index);
+			jedis.zincrby("globalKeywords", 1, keyword);
+			jedis.zincrby(keyword, 1, index);
 		}
+		jedis.incrBy("pageCount", 1);
 		
 		if (verb) System.out.println("Parsed: " + jedis.hget("urlIndex", index));
 		return true;
