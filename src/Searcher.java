@@ -16,7 +16,7 @@ import redis.clients.jedis.*;
 
 /**
  * @author Chloe Eghtebas
- * @author Reily Buttler
+ * @author Riley Butler
  *
  */ 
 public class Searcher {
