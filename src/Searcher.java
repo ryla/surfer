@@ -29,7 +29,15 @@ public class Searcher {
 		this.jedis = jedis;
 	}
 
-	public List<String> search(String keyword, int n){
+	public List<String> search(String query, int n){
+		List<String> toReturn= new ArrayList<String>();
+		for(Tuple tup: searchKeyword(query.toLowerCase(), n)){
+			toReturn.add(tup.getElement());
+		}
+		return toReturn;
+	}
+	
+	private Set<Tuple> searchKeyword(String keyword, int n) {
 		SortedSet<Tuple> finalOrder=new TreeSet<Tuple>();
 		Map<String,Double>terms = keywordLookup(keyword,n);
 		double maxQual = maxQuality();
@@ -41,11 +49,7 @@ public class Searcher {
 			double finalScore = (normalizedQual+normalizedRel)/2;
 			finalOrder.add(new Tuple(url,finalScore));			
 		}
-		List<String> toReturn= new ArrayList<String>();
-		for(Tuple tup: finalOrder){
-			toReturn.add(tup.getElement());
-		}
-		return toReturn;
+		return finalOrder;
 	}
 	
 	private double docFreq(String keyword) {
