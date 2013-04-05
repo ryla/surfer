@@ -4,8 +4,10 @@ import java.util.List;
 import redis.clients.jedis.*;
 
 /**
+ * @author Chloe Eghtebas
  * @author Brendan Ritter
  * @author Riley Butler
+ * @author Pati Martin
  */
 public class Parser implements Runnable {
 
