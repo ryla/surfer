@@ -11,13 +11,10 @@ import redis.clients.jedis.Tuple;
 import redis.clients.jedis.*;
 
 /**
- * 
- */
-
-/**
  * @author Chloe Eghtebas
  * @author Riley Butler
- *
+ * @author Pati Martin
+ * @author Brendan Ritter
  */ 
 public class Searcher {
 	private Jedis jedis;
@@ -27,6 +24,12 @@ public class Searcher {
 		this.jedis = jedis;
 	}
 
+	/**
+	 * Find URLs containing your search query.
+	 * 
+	 * @param query A string to search for. Currently fails on non-alphanumeric strings.
+	 * @return List of URLs as Strings, sorted by quality and relevance.
+	 */
 	public List<String> search(String query){
 		List<String> toReturn= new ArrayList<String>();
 		for(Tuple tup: searchKeyword(query.toLowerCase())){
@@ -35,6 +38,12 @@ public class Searcher {
 		return toReturn;
 	}
 	
+	/**
+	 * Find URLs containing a single sanitized keyword.
+	 * 
+	 * @param keyword Keyword to find.
+	 * @return A set of Tuples, containing URL and score.
+	 */
 	private Set<Tuple> searchKeyword(String keyword) {
 		SortedSet<Tuple> finalOrder=new TreeSet<Tuple>();
 		Map<String,Double>terms = keywordLookup(keyword);
@@ -50,16 +59,21 @@ public class Searcher {
 		return finalOrder;
 	}
 	
+	/**
+	 * Get the document frequency of a sanitized keyword.
+	 * 
+	 * @param keyword Keeyword to look up.
+	 * @return The global number of times keyword was encountered.
+	 */
 	private double docFreq(String keyword) {
 		return jedis.zscore("globalKeywords", keyword);
 	}
 	
 	/**
 	 * This method takes a search keyword and integer n and returns an 
-	 * ArrayList of the most relevant URL's of length n.
+	 * ArrayList of the most relevant URL's of length nResult.
 	 * 
 	 * @param keyword
-	 * @param n
 	 * @return n most relevant search results
 	 */
 	private Map<String,Double> keywordLookup(String keyword){
@@ -73,6 +87,10 @@ public class Searcher {
 		return urls;	
 	} 
 	
+	/**
+	 * Find the highest incoming link count of any URL crawled.
+	 * 
+	 */
 	private double maxQuality()
 	{
 		Set<String> sortedSet = jedis.zrevrange("urlScore", 0, 0);
@@ -81,10 +99,7 @@ public class Searcher {
 		
 		return highest;
 	}
-	/**
-	 * 
-	 * @param args
-	 */
+	
 	public static void main(String[] args) {
 		Searcher s= new Searcher(new Jedis("localhost"));
 		System.out.println(s.search("olin"));
