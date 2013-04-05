@@ -21,22 +21,23 @@ import redis.clients.jedis.*;
  */ 
 public class Searcher {
 	private Jedis jedis;
+	private int nResults = 10;
 	
 	public Searcher(Jedis jedis){
 		this.jedis = jedis;
 	}
 
-	public List<String> search(String query, int n){
+	public List<String> search(String query){
 		List<String> toReturn= new ArrayList<String>();
-		for(Tuple tup: searchKeyword(query.toLowerCase(), n)){
+		for(Tuple tup: searchKeyword(query.toLowerCase())){
 			toReturn.add(tup.getElement());
 		}
 		return toReturn;
 	}
 	
-	private Set<Tuple> searchKeyword(String keyword, int n) {
+	private Set<Tuple> searchKeyword(String keyword) {
 		SortedSet<Tuple> finalOrder=new TreeSet<Tuple>();
-		Map<String,Double>terms = keywordLookup(keyword,n);
+		Map<String,Double>terms = keywordLookup(keyword);
 		double maxQual = maxQuality();
 		double docFreq = docFreq(keyword);
 		for (String url: terms.keySet()){
@@ -61,9 +62,9 @@ public class Searcher {
 	 * @param n
 	 * @return n most relevant search results
 	 */
-	private Map<String,Double> keywordLookup(String keyword, int n){
+	private Map<String,Double> keywordLookup(String keyword){
 		Hashtable<String,Double> urls = new Hashtable<String,Double>();
-		for (Tuple tup: jedis.zrevrangeWithScores(keyword, 0, n-1)){
+		for (Tuple tup: jedis.zrevrangeWithScores(keyword, 0, nResults-1)){
 			String index = tup.getElement();
 			String url = jedis.hget("urlIndex", index);
 			urls.put(url, tup.getScore());
@@ -86,7 +87,7 @@ public class Searcher {
 	 */
 	public static void main(String[] args) {
 		Searcher s= new Searcher(new Jedis("localhost"));
-		System.out.println(s.search("olin",5));
+		System.out.println(s.search("olin"));
 	}
 	
 }
