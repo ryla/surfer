@@ -28,6 +28,29 @@ public class Searcher {
 	public Searcher(Jedis jedis){
 		this.jedis = jedis;
 	}
+
+	public List<String> search(String keyword, int n){
+		SortedSet<Tuple> finalOrder=new TreeSet<Tuple>();
+		Map<String,Double>terms = keywordLookup(keyword,n);
+		double maxQual = maxQuality();
+		double docFreq = docFreq(keyword);
+		for (String url: terms.keySet()){
+			double qualScore = jedis.zscore("urlScore", url);
+			double normalizedQual =  qualScore / maxQual;
+			double normalizedRel= terms.get(url) / docFreq;
+			double finalScore = (normalizedQual+normalizedRel)/2;
+			finalOrder.add(new Tuple(url,finalScore));			
+		}
+		List<String> toReturn= new ArrayList<String>();
+		for(Tuple tup: finalOrder){
+			toReturn.add(tup.getElement());
+		}
+		return toReturn;
+	}
+	
+	private double docFreq(String keyword) {
+		return jedis.zscore("globalKeywords", keyword);
+	}
 	
 	/**
 	 * This method takes a search keyword and integer n and returns an 
@@ -47,26 +70,8 @@ public class Searcher {
 		
 		return urls;	
 	} 
-	public List<String> search(String keyword, int n){
-		SortedSet<Tuple> finalOrder=new TreeSet<Tuple>();
-		Map<String,Double>terms = keywordLookup(keyword,n);
-		double highQual=getHighest();
-		double docFreq=jedis.zscore("globalKeywords", keyword);
-		for (String url: terms.keySet()){
-			double qualScore = jedis.zscore("urlScore", url);
-			double normalizedQual =  qualScore / highQual;
-			double normalizedRel= terms.get(url) / docFreq;
-			double finalScore = (normalizedQual+normalizedRel)/2;
-			finalOrder.add(new Tuple(url,finalScore));			
-		}
-		List<String> toReturn= new ArrayList<String>();
-		for(Tuple tup: finalOrder){
-			toReturn.add(tup.getElement());
-		}
-		return toReturn;
-	}
 	
-	public double getHighest()
+	private double maxQuality()
 	{
 		Set<String> sortedSet = jedis.zrevrange("urlScore", 0, 0);
 		Object [] arraySet = sortedSet.toArray();
