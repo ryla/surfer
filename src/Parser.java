@@ -21,12 +21,24 @@ public class Parser implements Runnable {
 		while (runOnce());
 	}
 	
+	/**
+	 * This method calls runOnce a given number
+	 * of times
+	 * 
+	 * @param attempts
+	 */
 	public void run(int attempts) {
 		for (int i = 0; i < attempts; i++) {
 			if (! runOnce()) return;
 		}
 	}
 	
+	/**
+	 * This method returns true if you want to
+	 * print the output and false if you don't
+	 *  
+	 * @return boolean
+	 */
 	public boolean runOnce() {
 		List<String> results = jedis.blpop(timeout, "toParse");
 		if (results == null) {
@@ -59,15 +71,28 @@ public class Parser implements Runnable {
 	public int getTimeout() {
 		return timeout;
 	}
-	
+
+	/**
+	 * This method prints the output
+	 */
 	public void verbose() {
 		verb = true;
 	}
 	
+	/**
+	 * This method does not print the output
+	 */
 	public void silent() {
 		verb = false;
 	}
 	
+	/**
+	 * This method takes a string, parses it and returns 
+	 * an ArrayList with all the parsed text
+	 * 
+	 * @param text
+	 * @return keywords 
+	 */
 	private static ArrayList<String> parseText(String text) {
 		ArrayList<String> keywords = new ArrayList<String>();
 		for (String keyword: text.split("\\s+")) {
