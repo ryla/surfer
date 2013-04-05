@@ -1,6 +1,7 @@
 import java.net.URL;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
+import java.util.Set;
 
 import redis.clients.jedis.*;
 
@@ -40,6 +41,16 @@ public class Searcher {
 		return urls;	
 	} 
 	
+	public int getHighest()
+	{
+		Set<String> sortedSet = jedis.zrevrange("urlScore", 0, 0);
+		Object [] arraySet = sortedSet.toArray();
+		int highest = jedis.zscore("urlScore", (String)arraySet[0]).intValue();
+		System.out.println(highest);
+		
+		return highest;
+	}
+	
 	/**
 	 * 
 	 * @param args
@@ -48,6 +59,7 @@ public class Searcher {
 		Searcher s= new Searcher(new Jedis("localhost"));
 		ArrayList<URL> urlist= s.lookup("olin" ,5);
 		System.out.println(urlist.toString());
+		int highest = s.getHighest();
 	}
 	
 }
