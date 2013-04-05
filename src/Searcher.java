@@ -1,7 +1,9 @@
 import java.net.URL;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Set;
+import redis.clients.jedis.Tuple;
 
 import redis.clients.jedis.*;
 
@@ -29,13 +31,12 @@ public class Searcher {
 	 * @param n
 	 * @return n most relevant search results
 	 */
-	public ArrayList<URL> lookup(String keyword, int n){
-		ArrayList<URL> urls = new ArrayList<URL>();
-		for (String index: jedis.zrevrange(keyword, 0, n -1)) {
+	private Set<Tuple> keywordLookup(String keyword, int n){
+		Set<Tuple> urls = new HashSet<Tuple>();
+		for (Tuple tup: jedis.zrevrangeWithScores(keyword, 0, n-1)){
+			String index = tup.getElement();
 			String url = jedis.hget("urlIndex", index);
-			try {
-				urls.add(new URL(url));
-			} catch (MalformedURLException e) { }
+			urls.add(new Tuple(url, tup.getScore()));
 		}
 		
 		return urls;	
@@ -50,16 +51,12 @@ public class Searcher {
 		
 		return highest;
 	}
-	
 	/**
 	 * 
 	 * @param args
 	 */
 	public static void main(String[] args) {
 		Searcher s= new Searcher(new Jedis("localhost"));
-		ArrayList<URL> urlist= s.lookup("olin" ,5);
-		System.out.println(urlist.toString());
-		int highest = s.getHighest();
 	}
 	
 }
