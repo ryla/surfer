@@ -62,7 +62,7 @@ public class Searcher {
 	/**
 	 * Get the document frequency of a sanitized keyword.
 	 * 
-	 * @param keyword Keeyword to look up.
+	 * @param keyword Keyword to look up.
 	 * @return The global number of times keyword was encountered.
 	 */
 	private double docFreq(String keyword) {
@@ -70,11 +70,10 @@ public class Searcher {
 	}
 	
 	/**
-	 * This method takes a search keyword and integer n and returns an 
-	 * ArrayList of the most relevant URL's of length nResult.
+	 * Get up to nResults of the top URLs containing keyword, sorted by relevance.
 	 * 
-	 * @param keyword
-	 * @return n most relevant search results
+	 * @param keyword Sanitized keyword to look up.
+	 * @return nResults most relevant search results
 	 */
 	private Map<String,Double> keywordLookup(String keyword){
 		Hashtable<String,Double> urls = new Hashtable<String,Double>();
